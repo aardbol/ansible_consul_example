@@ -3,11 +3,6 @@
 import json
 import requests
 
-# Further improvement ideas in real life scenario:
-# - caching, depending on how long requests to Consul take
-# - provide means to use public IP for hosts(s) instead of VPN one, this could e.g. be done via a separate group
-# - load directly from Consul rather than from the Github file
-
 class ConsulInventory:
     def __init__(self, url):
         self.inventory = {}
