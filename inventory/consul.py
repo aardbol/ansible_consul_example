@@ -71,6 +71,7 @@ class ConsulInventory:
 
 
 if __name__ == "__main__":
+    # url = "http://localhost:8500/v1/catalog/service/wireguard"
     url = "https://gist.githubusercontent.com/jakubgs/dbf1df154f2d94541dc01baf1116d69f/raw/e2cccda0fba8988bc0af8a710ba5c5b4413d7558/services.json"
     consul_inventory = ConsulInventory(url)
     print(consul_inventory.list())

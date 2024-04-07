@@ -1,0 +1,23 @@
+table inet filter {
+    chain input {
+        {% set metrics_ips = _host_ips['test']['metrics'] if 'test' in group_names else _host_ips['prod']['metrics'] %}
+        {% set app_ips = _host_ips['test']['app'] if 'test' in group_names else _host_ips['prod']['app'] %}
+        {% set backups_ips = _host_ips['test']['backups'] if 'test' in group_names else _host_ips['prod']['backups'] %}
+        {% set logs_ips = _host_ips['test']['logs'] if 'test' in group_names else _host_ips['prod']['logs'] %}
+
+        {% if 'logs_test' in group_names or 'logs_prod' in group_names %}
+            ip saddr { {{ (metrics_ips + app_ips + backups_ips) | join(', ') }} } tcp dport 5141 accept comment "logstash rsyslog"
+        {% endif %}
+
+        {% if 'metrics' not in group_names %}
+            {% if 'app_test' in group_names or 'app_prod' in group_names %}
+                ip saddr { {{ metrics_ips | join(', ') }} } tcp dport 9104 accept comment "mysql exporter"
+            {% endif %}
+            ip saddr { {{ (app_ips + backups_ips + logs_ips) | join(', ') }} } tcp dport 9100 accept comment "node exporter"
+        {% endif %}
+
+        {% if 'app' in group_names %}
+            ip saddr { {{ backups_ips | join(', ') }} } tcp dport 3306 accept comment "mysql db"
+        {% endif %}
+    }
+}

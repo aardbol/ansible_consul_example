@@ -1,3 +1,17 @@
 ---
+- name: node_base | Create lists of IPs per group
+  ansible.builtin.set_fact:
+    _host_ips:
+      test:
+        metrics: "{{ groups['metrics_test'] | map('extract', hostvars, ['ansible_host']) | list }}"
+        logs: "{{ groups['logs_test'] | map('extract', hostvars, ['ansible_host']) | list }}"
+        backups: "{{ groups['backups_test'] | map('extract', hostvars, ['ansible_host']) | list }}"
+        app: "{{ groups['app_test'] | map('extract', hostvars, ['ansible_host']) | list }}"
+      prod:
+        metrics: "{{ groups['metrics_prod'] | map('extract', hostvars, ['ansible_host']) | list }}"
+        logs: "{{ groups['logs_prod'] | map('extract', hostvars, ['ansible_host']) | list }}"
+        backups: "{{ groups['backups_prod'] | map('extract', hostvars, ['ansible_host']) | list }}"
+        app: "{{ groups['app_prod'] | map('extract', hostvars, ['ansible_host']) | list }}"
+
 - ansible.builtin.include_tasks: network.yml
   tags: network

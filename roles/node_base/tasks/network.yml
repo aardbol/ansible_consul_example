@@ -14,6 +14,13 @@
       mode: "0755"
     notify: apply nft
 
+  - name: Network | Copy node firewall rules
+    ansible.builtin.template:
+      src: node.nft.j2
+      dest: /etc/nftables.conf.d/node.nft
+      mode: "0755"
+    notify: apply nft
+
   - name: Network | Get service facts
     ansible.builtin.service_facts:
 

@@ -11,9 +11,13 @@ Status tech assessment
 
 `ansible-playbook -i inventory/consul.py playbooks/main.yml -D`
 
+**Apply mode to a specific group of hosts**
+
+`ansible-playbook -i inventory/consul.py playbooks/main.yml -D -l app_test`
+
 # Further improvements
 
-## Consul dynamic inventory
+**Consul dynamic inventory**
 
 - load directly from Consul rather than from the Github file
 - caching, depending on how long requests to Consul take
