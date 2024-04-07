@@ -1,0 +1,6 @@
+---
+- name: Status infra task
+  hosts: localhost
+  become: true
+  roles:
+    - ../roles/node_base

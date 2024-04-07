@@ -1,0 +1,42 @@
+---
+- block:
+
+  - name: Network | Create /etc/nftables.d folder
+    ansible.builtin.file:
+      path: /etc/nftables.d
+      state: directory
+      mode: "0755"
+
+  - name: Network | Copy nftables.conf
+    ansible.builtin.template:
+      src: nftables.conf.j2
+      dest: /etc/nftables.conf
+      mode: "0755"
+    notify: apply nft
+
+  - name: Network | Get service facts
+    ansible.builtin.service_facts:
+
+  - name: Network | Remove conflicting packages
+    block:
+
+    # To avoid any conflicts
+    - name: Network | Temporarily allow UFW policies
+      community.general.ufw:
+        state: enabled
+        policy: allow
+
+    - name: Network | Reset UFW
+      community.general.ufw:
+        state: reset
+
+    - name: Network | Disable UFW
+      community.general.ufw:
+        state: disabled
+
+    # Activate Nftables already, so the server will not run without a firewall too long
+    - meta: flush_handlers
+
+    when: ansible_facts.services['ufw'] is defined and ansible_facts.services['ufw']['state'] == 'running'
+
+  tags: network

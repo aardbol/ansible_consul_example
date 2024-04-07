@@ -1,0 +1,29 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+        chain input {
+                type filter hook input priority 0; policy {{ node_base_input_policy }};
+
+                ct state invalid drop comment "early drop of invalid connections"
+                ct state {established, related} accept comment "allow tracked connections"
+                iifname lo accept comment "allow from loopback"
+                {% if node_base_allow_icmp -%}
+                ip protocol icmp accept comment "allow icmp"
+                meta l4proto ipv6-icmp accept comment "allow icmp v6"
+                {% endif -%}
+                ip saddr { {{ node_base_allow_ssh_ipv4 | join(',') }} } tcp dport {{ node_base_ssh_port }} counter accept comment "allowed SSH IPv4"
+                {% if node_base_allow_ssh_ipv6 | length > 0 -%}
+                ip6 saddr { {{ node_base_allow_ssh_ipv6 | join(',') }} } tcp dport {{ node_base_ssh_port }} counter accept comment "allowed SSH IPv6"
+                {% endif -%}
+        }
+        chain forward {
+                type filter hook forward priority 0; policy {{ node_base_forward_policy }};
+        }
+        chain output {
+                type filter hook output priority 0; policy {{ node_base_output_policy }};
+        }
+}
+
+include "/etc/nftables.d/*.nft"

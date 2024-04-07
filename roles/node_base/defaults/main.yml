@@ -1,0 +1,18 @@
+---
+## Networking
+
+# Firewall rules for ICMP(v6)
+node_base_allow_icmp: true
+
+# Which IPv4 are allowed to connect via SSH
+node_base_allow_ssh_ipv4: []
+
+# Which IPv6 are allowed to connect via SSH
+node_base_allow_ssh_ipv6: []
+
+node_base_ssh_port: 22
+
+# Firewall default policies
+node_base_forward_policy: drop
+node_base_input_policy: drop
+node_base_output_policy: accept
