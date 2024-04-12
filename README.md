@@ -1,4 +1,4 @@
-Status tech assessment
+Ansible Consul example
 ======================
 
 # Instructions
